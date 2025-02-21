@@ -33,5 +33,5 @@ This is a **Django-based Movie Review System** where users can browse movie deta
 - **Django** (Backend)
 - **HTML, CSS, JavaScript** (Frontend)
 - **Bootstrap 5** (UI Styling)
-- **PostgreSQL / SQLite** (Database)
+- **PostgreSQL** (Database)
 

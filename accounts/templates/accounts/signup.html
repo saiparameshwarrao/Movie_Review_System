@@ -1,0 +1,90 @@
+{% extends 'base.html' %} 
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up</title>
+    <style>
+        body {
+            color: white;
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-image: url('{% static "images/pic2.png" %}');
+            background-size: cover;  
+            background-repeat: no-repeat;  
+        }
+
+        form {
+            background-color: rgba(0, 0, 0, 0.178);
+            display: inline-block;
+            text-align: left;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            height: 250px;
+            width: 300px;
+
+        }
+        input {
+            color: white;
+            background-color: rgba(0, 0, 0, 0.178);
+            display: block;
+            width: 100%;
+            margin: 10px 0;
+            height: 30px;
+            border: 1px solid white ;
+            
+        }
+        button {
+            display: block;
+            margin: 15px auto 0;
+            background-color: rgb(255, 140, 0);
+            color: white;
+            padding: 7px;
+            border: none;
+            cursor: pointer;
+            cursor: pointer;
+        }
+        a:link{
+            text-decoration: none;
+        }
+        a{
+            color: blanchedalmond;
+        }
+    </style>
+</head>
+<body>
+
+    
+    <!-- <h1>Sign Up</h1>
+    <form action="signup.php" method="POST">
+        <label>Enter your mobile number:</label>
+        <input type="tel" name="mobile" required>
+
+        <label>Enter your Name:</label>
+        <input type="text" name="name" required>
+
+        <label>Enter your password:</label>
+        <input type="password" name="password" required>
+
+        <button type="submit">Sign Up</button>
+    </form>
+    <p>Have an account? <a href="{% url 'login' %}">Log In</a></p> -->
+
+
+    {% block content %}
+    <h1>Sign Up</h1>
+    <form method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Sign Up</button>
+    </form>
+    <p>Already have an account? <a href="{% url 'login' %}">Log In</a></p>
+    {% endblock %}
+
+
+</body>
+</html>

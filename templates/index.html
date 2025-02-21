@@ -1,0 +1,73 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Opinion</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+        header {
+            background-color: #222;
+            color: white;
+            padding: 15px;
+        }
+        .movies {
+            margin-top: 20px;
+        }
+        .movie {
+            display: inline-block;
+            margin: 15px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        a:link {
+            color: white;
+            text-decoration: none;
+        }
+        button {
+            padding: 8px 12px;
+            background-color: rgb(255, 140, 0);
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Your Opinion</h1><br>
+        <h4><i>Where Every Review Matters</i></h4><br>
+        {% if user.is_authenticated %}
+            <p style="float: right;">Hello, {{ user.username }}</p>
+            <a href="{% url 'logout' %}"><button>Log Out</button></a>
+        {% else %}
+            <a href="{% url 'login' %}"><button>Log In</button></a>
+            <a href="{% url 'signup' %}"><button>Sign Up</button></a>
+        {% endif %}
+    </header>
+    
+
+    <div class="movies">
+        <h2>Currently Running Movies</h2>
+        {% for movie in movies %}
+        <div class="movie">
+            <img src="{{ movie.image.url }}" width="200">
+            <h3>{{ movie.name }}</h3><br>
+            <a href="{% url 'movie_detail' movie_name=movie.name %}">
+                <button>Write a Review</button>
+            </a>                     
+        </div>
+        {% endfor %}
+    </div>
+</body>
+</html>

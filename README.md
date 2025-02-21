@@ -16,7 +16,7 @@ This is a **Django-based Movie Review System** where users can browse movie deta
 
 ### ⚙️ How It Works
 1. **Submitting a Review**
-   - A user enters a username (optional, defaults to "Anonymous").
+   - A user enters a username.
    - A rating (1-5) and review text are required.
    - The system validates input and saves the review.
 

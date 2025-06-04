@@ -1,4 +1,4 @@
-# Your Opinion - Movie Review System
+# Movie Review System
 
 
 This is a **Django-based Movie Review System** where users can browse movie details, read reviews, and submit their own reviews.

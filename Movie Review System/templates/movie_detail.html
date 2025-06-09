@@ -1,0 +1,233 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ movie.name }}</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            background-color: #000000;
+            color: white;
+            font-family: Arial, sans-serif;
+        }
+        .movie-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            padding: 20px;
+            background-color: black;
+            color: white;
+            gap: 20px;
+        }
+        .movie-info {
+            width: 60%;
+        }
+        .movie-img {
+            width: 35%;
+        }
+        .movie-img img {
+            width: 100%;
+            max-width: 300px;
+            border-radius: 10px;
+        }
+        button {
+            padding: 8px 12px;
+            background-color: orange;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+            border-radius: 5px;
+        }
+        button:hover {
+            background-color: darkorange;
+        }
+        .spoiler-box {
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #222;
+            border-radius: 5px;
+            display: none;
+        }
+        .spoiler-content {
+            filter: blur(8px);
+            transition: filter 0.5s ease;
+        }
+        .spoiler-box.revealed .spoiler-content {
+            filter: blur(0);
+        }
+
+        .rating-container {
+            margin-top: 20px;
+        }
+        .stars {
+            display: flex;
+            font-size: 30px;
+            cursor: pointer;
+        }
+        .star {
+            color: gray;
+            transition: color 0.3s;
+        }
+        .star.filled {
+            color: gold;
+        }
+
+        .review-section {
+            margin-top: 20px;
+        }
+        textarea {
+            width: 100%;
+            height: 80px;
+            padding: 10px;
+            font-size: 14px;
+            border-radius: 5px;
+            border: 1px solid #666;
+            background-color: #222;
+            color: white;
+        }
+        .submit-btn {
+            margin-top: 10px;
+            background-color: green;
+        }
+        .submit-btn:hover {
+            background-color: darkgreen;
+        }
+
+        .existing-reviews {
+            margin-top: 30px;
+        }
+        .existing-review {
+            background-color: #333;
+            padding: 10px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    
+
+    <div class="movie-container">
+        <div class="movie-info">
+            <h2>{{ movie.name }}</h2>
+            <p><strong>Director:</strong> {% if movie_review and movie_review.director %}{{ movie_review.director }}{% else %}Not Available{% endif %}</p>
+            <p><strong>Genre:</strong> {% if movie.reviews.first.genre %}{{ movie.reviews.first.genre }}{% else %}Not Available{% endif %}</p>
+            <p><strong>Release Date:</strong> {% if movie.reviews.first.release_date %}{{ movie.reviews.first.release_date }}{% else %}Not Available{% endif %}</p>
+            <p><strong>Synopsis:</strong> {% if movie.reviews.first.synopsis %}{{ movie.reviews.first.synopsis }}{% else %}Not Available{% endif %}</p>
+            <p><strong>Spoiler:</strong> <button onclick="showSpoiler()">Show Spoiler</button></p>
+            
+            <div class="spoiler-box" id="spoilerBox">
+                <p class="spoiler-content">{% if movie.reviews.first.spoiler %}{{ movie.reviews.first.spoiler }}{% else %}No Spoiler Available{% endif %}</p>
+            </div>
+            
+            
+
+            <div class="rating-container">
+                <h3>Rate this movie:</h3>
+                <div class="stars">
+                    <span class="star" data-value="1">★</span>
+                    <span class="star" data-value="2">★</span>
+                    <span class="star" data-value="3">★</span>
+                    <span class="star" data-value="4">★</span>
+                    <span class="star" data-value="5">★</span>
+                </div>
+            </div>
+
+            <div class="review-section">
+                <h3>Write your review:</h3>
+                <form method="POST">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <textarea name="review_text" id="reviewText" placeholder="Write your thoughts about the movie..."></textarea>
+                    <input type="hidden" name="rating" id="ratingInput" value="0">
+                    <button type="submit" class="submit-btn">Submit Review</button>
+                </form>
+            </div>
+            
+
+
+            <div class="existing-reviews">
+                <h3>Existing Reviews:</h3>
+                {% for review in user_reviews %}
+                    <div class="existing-review">
+                        <p><strong>{{ review.username }}</strong> rated <strong>{{ review.rating }}/5</strong></p>
+                        <p>{{ review.review_text }}</p>
+                    </div>
+                {% empty %}
+                    <p>No reviews yet. Be the first to write one!</p>
+                {% endfor %}
+            </div>
+            
+            
+
+        </div>
+
+        <div class="movie-img">
+            <img src="{{ movie.image.url }}" alt="{{ movie.name }}">
+        </div>
+    </div>
+
+    <script>
+        function showSpoiler() {
+            let spoilerBox = document.getElementById("spoilerBox");
+            spoilerBox.style.display = "block";
+            spoilerBox.classList.add("revealed");
+        }
+
+        const stars = document.querySelectorAll('.star');
+        let selectedRating = 0;
+
+        stars.forEach(star => {
+            star.addEventListener('mouseover', function() {
+                highlightStars(this.getAttribute('data-value'));
+            });
+
+            star.addEventListener('mouseout', function() {
+                resetStars();
+            });
+
+            star.addEventListener('click', function() {
+                selectedRating = this.getAttribute('data-value');
+                setRating(selectedRating);
+            });
+        });
+
+        function highlightStars(rating) {
+            stars.forEach(star => {
+                if (star.getAttribute('data-value') <= rating) {
+                    star.classList.add('filled');
+                } else {
+                    star.classList.remove('filled');
+                }
+            });
+        }
+
+        function resetStars() {
+            stars.forEach(star => {
+                if (!star.classList.contains('selected')) {
+                    star.classList.remove('filled');
+                }
+            });
+        }
+
+        function setRating(rating) {
+            stars.forEach(star => {
+                if (star.getAttribute('data-value') <= rating) {
+                    star.classList.add('filled', 'selected');
+                } else {
+                    star.classList.remove('filled', 'selected');
+                }
+            });
+            document.getElementById('ratingInput').value = rating;  // Set the hidden rating input
+        }
+    </script>
+
+</body>
+</html> 
